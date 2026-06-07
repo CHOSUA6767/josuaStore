@@ -302,11 +302,14 @@
             submitBtn.disabled = true;
             submitBtn.innerText = "등록 중...";
 
+            const locations = ["강남구 역삼동", "서초구 방배동", "송파구 잠실동", "강동구 천호동", "동작구 사당동", "마포구 신천동", "관악구 노량진동"];
+            const randomLocation = locations[Math.floor(Math.random() * locations.length)];
+
             const newItem = {
                 title: titleInput,
                 price: Number(priceInput),
                 desc: descInput || "상세 설명이 없습니다.",
-                location: "우리 동네",
+                location: randomLocation,
                 imgUrl: null, 
                 likes: 0,
                 createdAt: serverTimestamp() // 서버 시간 기준으로 저장 및 정렬
