@@ -171,7 +171,7 @@
     <!-- Firebase JS SDK (Module 버전 사용) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
         // 사용자가 제공한 Firebase 설정
@@ -313,23 +313,59 @@
                 return;
             }
 
+            const myCommentIds = JSON.parse(localStorage.getItem('myCommentIds') || '[]');
+
             comments.forEach(c => {
                 const div = document.createElement('div');
-                div.className = 'bg-white p-3 rounded-lg shadow-sm border border-gray-100';
+                div.className = 'bg-white p-3 rounded-lg shadow-sm border border-gray-100 relative group';
                 const timeString = c.createdAt ? new Date(c.createdAt).toLocaleString() : '방금 전';
+                
+                // 내가 작성한 댓글이면 삭제 버튼 표시
+                const deleteBtnHtml = myCommentIds.includes(c.id) 
+                    ? `<button onclick="deleteComment('${item.id}', '${c.id}')" class="absolute top-2 right-2 text-gray-300 hover:text-red-500 transition"><span class="material-symbols-outlined text-[18px]">delete</span></button>`
+                    : '';
+
                 div.innerHTML = `
-                    <div class="flex items-center gap-2 mb-1">
+                    <div class="flex items-center gap-2 mb-1 pr-6">
                         <div class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
                             <span class="material-symbols-outlined text-sm text-gray-500">face</span>
                         </div>
                         <span class="font-bold text-xs text-gray-700">${c.author}</span>
                         <span class="text-[10px] text-gray-400 ml-auto">${timeString}</span>
                     </div>
-                    <p class="text-sm text-gray-800 pl-8 break-words">${c.text}</p>
+                    <p class="text-sm text-gray-800 pl-8 pr-4 break-words">${c.text}</p>
+                    ${deleteBtnHtml}
                 `;
                 commentList.appendChild(div);
             });
         }
+
+        // 글로벌 스코프에 댓글 삭제 함수 노출 (인라인 onclick 이벤트용)
+        window.deleteComment = async function(itemId, commentId) {
+            if (!confirm("이 댓글을 삭제하시겠습니까?")) return;
+            
+            const item = itemsData.find(i => i.id === itemId);
+            if (!item) return;
+            
+            const commentToDelete = item.comments.find(c => c.id === commentId);
+            if (!commentToDelete) return;
+
+            try {
+                const itemRef = doc(db, "items", itemId);
+                await updateDoc(itemRef, {
+                    comments: arrayRemove(commentToDelete)
+                });
+                
+                // 로컬 스토리지에서도 삭제 (선택사항)
+                let myCommentIds = JSON.parse(localStorage.getItem('myCommentIds') || '[]');
+                myCommentIds = myCommentIds.filter(id => id !== commentId);
+                localStorage.setItem('myCommentIds', JSON.stringify(myCommentIds));
+                
+            } catch (error) {
+                console.error("댓글 삭제 실패:", error);
+                alert("댓글 삭제에 실패했습니다.");
+            }
+        };
 
         // 상세 페이지 열기 로직
         function openDetailPage(itemId) {
@@ -464,11 +500,18 @@
 
             commentSubmitBtn.disabled = true;
             
+            const newCommentId = Date.now().toString() + Math.random().toString(36).substr(2, 9);
             const newComment = {
+                id: newCommentId,
                 text: text,
                 author: nickname,
                 createdAt: new Date().toISOString()
             };
+
+            // 작성한 댓글 ID를 로컬스토리지에 저장 (삭제 권한 확인용)
+            let myCommentIds = JSON.parse(localStorage.getItem('myCommentIds') || '[]');
+            myCommentIds.push(newCommentId);
+            localStorage.setItem('myCommentIds', JSON.stringify(myCommentIds));
 
             try {
                 const itemRef = doc(db, "items", currentOpenItemId);
