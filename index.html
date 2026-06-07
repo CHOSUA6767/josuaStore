@@ -23,6 +23,7 @@
             min-height: 100vh;
             position: relative;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            overflow: hidden; /* Prevent scrolling outside app container */
         }
         /* Hide scrollbar for cleaner look */
         ::-webkit-scrollbar {
@@ -33,7 +34,7 @@
 </head>
 <body class="text-gray-800 font-sans">
 
-    <div class="app-container flex flex-col h-screen">
+    <div class="app-container flex flex-col h-screen relative">
         
         <!-- Header -->
         <header class="sticky top-0 bg-white border-b border-gray-200 z-10 px-4 py-3 flex justify-between items-center">
@@ -48,86 +49,7 @@
 
         <!-- Main Content (Item List) -->
         <main id="itemList" class="flex-1 overflow-y-auto pb-20">
-            <!-- Item 1 -->
-            <article class="flex px-4 py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition">
-                <div class="w-28 h-28 bg-gray-200 rounded-md flex-shrink-0 overflow-hidden relative">
-                    <!-- Placeholder image -->
-                    <img src="https://picsum.photos/seed/item1/200/200" alt="상품 이미지" class="w-full h-full object-cover">
-                </div>
-                <div class="ml-4 flex flex-col justify-center flex-1">
-                    <h2 class="text-lg font-medium text-gray-900 line-clamp-2">아이패드 프로 4세대 11인치 팝니다</h2>
-                    <p class="text-sm text-gray-500 mt-1">강남구 역삼동 · 2시간 전</p>
-                    <div class="mt-2 flex justify-between items-end">
-                        <p class="text-lg font-bold">650,000원</p>
-                        <div class="flex items-center text-gray-400 gap-1 text-sm">
-                            <span class="material-symbols-outlined text-[16px]">favorite</span> 12
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Item 2 -->
-            <article class="flex px-4 py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition">
-                <div class="w-28 h-28 bg-gray-200 rounded-md flex-shrink-0 overflow-hidden relative">
-                    <img src="https://picsum.photos/seed/item2/200/200" alt="상품 이미지" class="w-full h-full object-cover">
-                </div>
-                <div class="ml-4 flex flex-col justify-center flex-1">
-                    <h2 class="text-lg font-medium text-gray-900 line-clamp-2">캠핑 의자 2개 세트 (상태 A급)</h2>
-                    <p class="text-sm text-gray-500 mt-1">서초구 방배동 · 5시간 전</p>
-                    <div class="mt-2 flex justify-between items-end">
-                        <p class="text-lg font-bold">30,000원</p>
-                        <div class="flex items-center text-gray-400 gap-1 text-sm">
-                            <span class="material-symbols-outlined text-[16px]">favorite</span> 3
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Item 3 -->
-            <article class="flex px-4 py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition">
-                <div class="w-28 h-28 bg-gray-200 rounded-md flex-shrink-0 overflow-hidden relative">
-                    <img src="https://picsum.photos/seed/item3/200/200" alt="상품 이미지" class="w-full h-full object-cover">
-                </div>
-                <div class="ml-4 flex flex-col justify-center flex-1">
-                    <h2 class="text-lg font-medium text-gray-900 line-clamp-2">스투키 화분 인테리어용</h2>
-                    <p class="text-sm text-gray-500 mt-1">송파구 잠실동 · 1일 전</p>
-                    <div class="mt-2 flex justify-between items-end">
-                        <p class="text-lg font-bold">15,000원</p>
-                    </div>
-                </div>
-            </article>
-            
-            <!-- Item 4 -->
-            <article class="flex px-4 py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition">
-                <div class="w-28 h-28 bg-gray-200 rounded-md flex-shrink-0 overflow-hidden relative">
-                    <img src="https://picsum.photos/seed/item4/200/200" alt="상품 이미지" class="w-full h-full object-cover">
-                </div>
-                <div class="ml-4 flex flex-col justify-center flex-1">
-                    <h2 class="text-lg font-medium text-gray-900 line-clamp-2">나이키 운동화 265mm 한 번 신음</h2>
-                    <p class="text-sm text-gray-500 mt-1">강동구 천호동 · 2일 전</p>
-                    <div class="mt-2 flex justify-between items-end">
-                        <p class="text-lg font-bold">45,000원</p>
-                        <div class="flex items-center text-gray-400 gap-1 text-sm">
-                            <span class="material-symbols-outlined text-[16px]">favorite</span> 5
-                        </div>
-                    </div>
-                </div>
-            </article>
-            
-             <!-- Item 5 -->
-             <article class="flex px-4 py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition">
-                <div class="w-28 h-28 bg-gray-200 rounded-md flex-shrink-0 overflow-hidden relative flex items-center justify-center">
-                    <span class="text-gray-400 material-symbols-outlined text-4xl">image</span>
-                </div>
-                <div class="ml-4 flex flex-col justify-center flex-1">
-                    <h2 class="text-lg font-medium text-gray-900 line-clamp-2">원목 책상 무료나눔 합니다. 직접 가져가셔야 해요.</h2>
-                    <p class="text-sm text-gray-500 mt-1">동작구 사당동 · 3일 전</p>
-                    <div class="mt-2 flex justify-between items-end">
-                        <p class="text-lg font-bold">나눔</p>
-                    </div>
-                </div>
-            </article>
-
+            <!-- JavaScript가 이곳에 상품 목록을 렌더링합니다 -->
         </main>
 
         <!-- Floating Action Button (FAB) -->
@@ -162,7 +84,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">자세한 설명</label>
-                            <textarea rows="4" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 resize-none" placeholder="상품에 대한 자세한 설명을 적어주세요"></textarea>
+                            <textarea id="itemDesc" rows="4" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 resize-none" placeholder="상품에 대한 자세한 설명을 적어주세요"></textarea>
                         </div>
                     </form>
                 </div>
@@ -172,71 +94,236 @@
             </div>
         </div>
 
+        <!-- Detail Page (Full Screen Overlay) -->
+        <div id="detailPage" class="hidden absolute inset-0 z-40 bg-white flex flex-col h-full overflow-hidden transition-transform transform translate-x-full">
+            <header class="absolute top-0 w-full z-50 p-4 flex justify-between items-center">
+                <button id="closeDetailBtn" class="bg-black bg-opacity-40 text-white p-2 rounded-full hover:bg-opacity-60 transition flex items-center justify-center">
+                    <span class="material-symbols-outlined text-lg">arrow_back</span>
+                </button>
+            </header>
+            <div class="flex-1 overflow-y-auto pb-20">
+                <div id="detailImageContainer" class="w-full h-80 bg-gray-200 flex items-center justify-center">
+                    <!-- Image inserted by JS -->
+                </div>
+                <div class="p-4 border-b border-gray-100 flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 overflow-hidden">
+                        <span class="material-symbols-outlined text-3xl">face</span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-bold text-md text-gray-900">동네주민</p>
+                        <p class="text-xs text-gray-500" id="detailLocation">위치 정보</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-bold text-orange-500">36.5°C</p>
+                        <div class="w-12 h-1 bg-gray-200 rounded-full mt-1">
+                            <div class="w-1/2 h-full bg-orange-500 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h2 id="detailTitle" class="text-xl font-bold text-gray-900">상품 제목</h2>
+                    <p class="text-sm text-gray-500 mt-1 mb-6" id="detailTime">시간</p>
+                    <p id="detailDesc" class="text-gray-800 whitespace-pre-wrap leading-relaxed text-[15px]">상품 설명</p>
+                </div>
+            </div>
+            
+            <!-- Detail Bottom Bar -->
+            <div class="absolute bottom-0 w-full bg-white px-4 py-3 border-t border-gray-200 flex justify-between items-center z-50">
+                <div class="flex items-center gap-4">
+                    <button class="text-gray-400 hover:text-red-500 transition border-r border-gray-200 pr-4 flex flex-col items-center">
+                        <span class="material-symbols-outlined">favorite</span>
+                    </button>
+                    <div>
+                        <p id="detailPrice" class="text-lg font-bold text-gray-900">가격</p>
+                        <p class="text-xs text-orange-500 font-bold">가격 제안 불가</p>
+                    </div>
+                </div>
+                <button class="bg-orange-500 text-white px-5 py-2 rounded-md font-bold hover:bg-orange-600 transition">채팅하기</button>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // Modal Logic
+        // 초기 더미 데이터 설정
+        const defaultItems = [
+            {
+                id: 1, title: "아이패드 프로 4세대 11인치 팝니다", price: 650000, 
+                desc: "기스 없이 깨끗하게 사용했습니다.\n박스 풀세트로 드립니다.\n직거래 선호합니다.", 
+                location: "강남구 역삼동", time: "2시간 전", 
+                imgUrl: "https://picsum.photos/seed/item1/600/600", likes: 12
+            },
+            {
+                id: 2, title: "캠핑 의자 2개 세트 (상태 A급)", price: 30000, 
+                desc: "두 번 사용한 캠핑 의자입니다.\n접이식이라 보관이 편해요.", 
+                location: "서초구 방배동", time: "5시간 전", 
+                imgUrl: "https://picsum.photos/seed/item2/600/600", likes: 3
+            },
+            {
+                id: 3, title: "스투키 화분 인테리어용", price: 15000, 
+                desc: "공기 정화에 좋은 스투키입니다.\n방 인테리어용으로 예뻐요!", 
+                location: "송파구 잠실동", time: "1일 전", 
+                imgUrl: "https://picsum.photos/seed/item3/600/600", likes: 0
+            },
+            {
+                id: 4, title: "나이키 운동화 265mm 한 번 신음", price: 45000, 
+                desc: "사이즈 미스로 한 번 신고 모셔둔 운동화입니다.\n상태 거의 새것입니다.", 
+                location: "강동구 천호동", time: "2일 전", 
+                imgUrl: "https://picsum.photos/seed/item4/600/600", likes: 5
+            }
+        ];
+
+        // 1. LocalStorage에서 데이터 불러오기 (없으면 더미 데이터 저장)
+        function loadItems() {
+            const storedData = localStorage.getItem('myStoreItems');
+            if (storedData) {
+                return JSON.parse(storedData);
+            } else {
+                localStorage.setItem('myStoreItems', JSON.stringify(defaultItems));
+                return defaultItems;
+            }
+        }
+
+        // 2. LocalStorage에 데이터 저장하기
+        function saveItems(itemsArray) {
+            localStorage.setItem('myStoreItems', JSON.stringify(itemsArray));
+        }
+
+        let itemsData = loadItems();
+
+        // DOM 요소 연결
+        const itemListEl = document.getElementById('itemList');
         const fabBtn = document.getElementById('fabBtn');
         const addModal = document.getElementById('addModal');
         const closeModalBtn = document.getElementById('closeModalBtn');
         const submitBtn = document.getElementById('submitBtn');
 
-        // Open Modal
-        fabBtn.addEventListener('click', () => {
-            addModal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        // 상세 페이지 DOM 요소 연결
+        const detailPage = document.getElementById('detailPage');
+        const closeDetailBtn = document.getElementById('closeDetailBtn');
+        const detailImageContainer = document.getElementById('detailImageContainer');
+        const detailTitle = document.getElementById('detailTitle');
+        const detailPrice = document.getElementById('detailPrice');
+        const detailDesc = document.getElementById('detailDesc');
+        const detailLocation = document.getElementById('detailLocation');
+        const detailTime = document.getElementById('detailTime');
+
+        // 3. 상품 목록 화면에 그리기
+        function renderItems() {
+            itemListEl.innerHTML = ''; // 기존 목록 비우기
+            
+            itemsData.forEach(item => {
+                const formattedPrice = item.price === 0 ? '나눔' : Number(item.price).toLocaleString() + '원';
+                const imageHtml = item.imgUrl 
+                    ? `<img src="${item.imgUrl}" alt="상품" class="w-full h-full object-cover">`
+                    : `<span class="text-gray-400 material-symbols-outlined text-4xl">image</span>`;
+                
+                const article = document.createElement('article');
+                article.className = 'flex px-4 py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition';
+                
+                // 클릭 시 상세 페이지 열기 이벤트 추가
+                article.onclick = () => openDetailPage(item.id);
+                
+                article.innerHTML = `
+                    <div class="w-28 h-28 bg-gray-200 rounded-md flex-shrink-0 overflow-hidden relative flex items-center justify-center">
+                        ${imageHtml}
+                    </div>
+                    <div class="ml-4 flex flex-col justify-center flex-1">
+                        <h2 class="text-lg font-medium text-gray-900 line-clamp-2">${item.title}</h2>
+                        <p class="text-sm text-gray-500 mt-1">${item.location} · ${item.time}</p>
+                        <div class="mt-2 flex justify-between items-end">
+                            <p class="text-lg font-bold">${formattedPrice}</p>
+                            ${item.likes > 0 ? `<div class="flex items-center text-gray-400 gap-1 text-sm"><span class="material-symbols-outlined text-[16px]">favorite</span> ${item.likes}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+                itemListEl.appendChild(article);
+            });
+        }
+
+        // 4. 상세 페이지 열기 로직
+        function openDetailPage(itemId) {
+            const item = itemsData.find(i => i.id === itemId);
+            if (!item) return;
+
+            // 상세 데이터 채워넣기
+            detailTitle.textContent = item.title;
+            detailPrice.textContent = item.price === 0 ? '나눔' : Number(item.price).toLocaleString() + '원';
+            detailDesc.textContent = item.desc;
+            detailLocation.textContent = item.location;
+            detailTime.textContent = item.time;
+
+            if(item.imgUrl) {
+                detailImageContainer.innerHTML = `<img src="${item.imgUrl}" class="w-full h-full object-cover">`;
+            } else {
+                detailImageContainer.innerHTML = `<span class="text-gray-400 material-symbols-outlined text-6xl">image</span>`;
+            }
+
+            // 슬라이드 애니메이션으로 보여주기
+            detailPage.classList.remove('hidden');
+            // 약간의 딜레이를 주어 transition 적용
+            setTimeout(() => {
+                detailPage.classList.remove('translate-x-full');
+            }, 10);
+        }
+
+        // 상세 페이지 닫기 로직
+        closeDetailBtn.addEventListener('click', () => {
+            detailPage.classList.add('translate-x-full');
+            // 애니메이션 종료 후 hidden 처리
+            setTimeout(() => {
+                detailPage.classList.add('hidden');
+            }, 300);
         });
 
-        // Close Modal
+
+        // 글쓰기 모달 열기/닫기
+        fabBtn.addEventListener('click', () => {
+            addModal.classList.remove('hidden');
+        });
+
         const closeModal = () => {
             addModal.classList.add('hidden');
-            document.body.style.overflow = '';
         };
 
         closeModalBtn.addEventListener('click', closeModal);
 
-        // Close when clicking outside the modal content
-        addModal.addEventListener('click', (e) => {
-            if (e.target === addModal) {
-                closeModal();
-            }
-        });
-
-        // Submit action
+        // 5. 새 상품 등록 로직
         submitBtn.addEventListener('click', (e) => {
             e.preventDefault();
             
             const titleInput = document.getElementById('itemTitle').value;
             const priceInput = document.getElementById('itemPrice').value;
+            const descInput = document.getElementById('itemDesc').value;
             
             if (!titleInput || !priceInput) {
                 alert('제목과 가격을 모두 입력해주세요.');
                 return;
             }
 
-            const formattedPrice = Number(priceInput).toLocaleString() + '원';
-            
-            const newItemHtml = `
-            <article class="flex px-4 py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition">
-                <div class="w-28 h-28 bg-gray-200 rounded-md flex-shrink-0 overflow-hidden relative flex items-center justify-center">
-                    <span class="text-gray-400 material-symbols-outlined text-4xl">image</span>
-                </div>
-                <div class="ml-4 flex flex-col justify-center flex-1">
-                    <h2 class="text-lg font-medium text-gray-900 line-clamp-2">${titleInput}</h2>
-                    <p class="text-sm text-gray-500 mt-1">방금 전 · 내 위치</p>
-                    <div class="mt-2 flex justify-between items-end">
-                        <p class="text-lg font-bold">${formattedPrice}</p>
-                    </div>
-                </div>
-            </article>
-            `;
+            const newItem = {
+                id: Date.now(), // 고유 ID 생성
+                title: titleInput,
+                price: Number(priceInput),
+                desc: descInput || "상세 설명이 없습니다.",
+                location: "내 위치",
+                time: "방금 전",
+                imgUrl: null, // 임시: 이미지는 아직 업로드 안 됨
+                likes: 0
+            };
 
-            const itemList = document.getElementById('itemList');
-            itemList.insertAdjacentHTML('afterbegin', newItemHtml); // 맨 위에 추가
+            // 데이터를 배열 맨 앞에 추가하고, LocalStorage에 저장 후 리렌더링
+            itemsData.unshift(newItem);
+            saveItems(itemsData);
+            renderItems();
 
             closeModal();
             document.getElementById('addItemForm').reset();
         });
+
+        // 초기 실행
+        renderItems();
+
     </script>
 </body>
 </html>
