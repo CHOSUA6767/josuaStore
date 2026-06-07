@@ -157,6 +157,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
         // 사용자가 제공한 Firebase 설정
         const firebaseConfig = {
@@ -172,15 +173,16 @@
         // Firebase 초기화
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app);
         
         // 데이터베이스 컬렉션(폴더) 지정
         const itemsCol = collection(db, "items");
 
         let itemsData = [];
         let currentOpenItemId = null; // 현재 열려있는 상세 페이지의 아이템 ID
-        let uploadedImageBase64 = null; // 업로드된 이미지의 Base64 데이터
+        let uploadedImageFile = null; // 업로드할 실제 파일 객체
 
-        // 이미지 파일 선택 시 미리보기 및 Base64 변환
+        // 이미지 파일 선택 시 미리보기 처리
         const imageInput = document.getElementById('imageInput');
         const imagePreview = document.getElementById('imagePreview');
         const cameraIcon = document.getElementById('cameraIcon');
@@ -188,17 +190,12 @@
         imageInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
-                // 용량 제한 (예: 2MB) Firestore 단일 문서 크기 제한(1MB) 고려하여 약간 작게 설정
-                if (file.size > 800 * 1024) { 
-                    alert("이미지 용량이 너무 큽니다. 800KB 이하의 이미지를 선택해주세요.");
-                    imageInput.value = "";
-                    return;
-                }
+                uploadedImageFile = file; // 파일을 나중에 업로드하기 위해 저장
 
+                // 미리보기를 위한 URL 생성
                 const reader = new FileReader();
                 reader.onload = (event) => {
-                    uploadedImageBase64 = event.target.result;
-                    imagePreview.src = uploadedImageBase64;
+                    imagePreview.src = event.target.result;
                     imagePreview.classList.remove('hidden');
                     cameraIcon.classList.add('hidden');
                 };
@@ -424,26 +421,43 @@
             const locations = ["강남구 역삼동", "서초구 방배동", "송파구 잠실동", "강동구 천호동", "동작구 사당동", "마포구 신천동", "관악구 노량진동"];
             const randomLocation = locations[Math.floor(Math.random() * locations.length)];
 
-            const newItem = {
-                title: titleInput,
-                price: Number(priceInput),
-                desc: descInput || "상세 설명이 없습니다.",
-                location: randomLocation,
-                imgUrl: uploadedImageBase64, 
-                likes: 0,
-                createdAt: serverTimestamp() // 서버 시간 기준으로 저장 및 정렬
-            };
-
             try {
+                let finalImgUrl = null;
+                
+                // 이미지가 선택된 경우 Storage에 먼저 업로드
+                if (uploadedImageFile) {
+                    submitBtn.innerText = "사진 업로드 중...";
+                    const uniqueFilename = `images/${Date.now()}_${uploadedImageFile.name}`;
+                    const storageRef = ref(storage, uniqueFilename);
+                    
+                    const snapshot = await uploadBytes(storageRef, uploadedImageFile);
+                    finalImgUrl = await getDownloadURL(snapshot.ref);
+                }
+
+                submitBtn.innerText = "데이터 저장 중...";
+
+                const newItem = {
+                    title: titleInput,
+                    price: Number(priceInput),
+                    desc: descInput || "상세 설명이 없습니다.",
+                    location: randomLocation,
+                    imgUrl: finalImgUrl, 
+                    likes: 0,
+                    createdAt: serverTimestamp() // 서버 시간 기준으로 저장 및 정렬
+                };
+
                 // Firestore에 데이터 추가
                 await addDoc(itemsCol, newItem);
+                
                 closeModal();
                 document.getElementById('addItemForm').reset();
                 // 이미지 미리보기 초기화
                 imagePreview.src = "";
                 imagePreview.classList.add('hidden');
                 cameraIcon.classList.remove('hidden');
-                uploadedImageBase64 = null;
+                uploadedImageFile = null;
+                imageInput.value = "";
+                
             } catch (error) {
                 console.error("데이터 추가 실패: ", error);
                 alert("등록에 실패했습니다. (데이터베이스 권한 설정을 확인하세요)");
