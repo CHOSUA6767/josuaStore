@@ -72,9 +72,14 @@
                 <div class="p-6 overflow-y-auto flex-1">
                     <form id="addItemForm" class="flex flex-col gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">상품 이미지 (현재 텍스트만 가능)</label>
-                            <div class="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400 cursor-pointer hover:bg-gray-50">
-                                <span class="material-symbols-outlined">add_a_photo</span>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">상품 이미지</label>
+                            <div class="flex items-center gap-4">
+                                <label for="imageInput" class="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400 cursor-pointer hover:bg-gray-50 flex-shrink-0 relative overflow-hidden">
+                                    <span class="material-symbols-outlined absolute z-10" id="cameraIcon">add_a_photo</span>
+                                    <img id="imagePreview" src="" class="w-full h-full object-cover hidden absolute z-20">
+                                </label>
+                                <input type="file" id="imageInput" accept="image/*" class="hidden">
+                                <p class="text-xs text-gray-500">클릭하여 사진을 추가하세요<br>(선택사항)</p>
                             </div>
                         </div>
                         <div>
@@ -133,8 +138,9 @@
             <!-- Detail Bottom Bar -->
             <div class="absolute bottom-0 w-full bg-white px-4 py-3 border-t border-gray-200 flex justify-between items-center z-50">
                 <div class="flex items-center gap-4">
-                    <button class="text-gray-400 hover:text-red-500 transition border-r border-gray-200 pr-4 flex flex-col items-center">
+                    <button id="likeBtn" class="text-gray-400 hover:text-red-500 transition border-r border-gray-200 pr-4 flex flex-col items-center">
                         <span class="material-symbols-outlined">favorite</span>
+                        <span id="likeCount" class="text-xs mt-1 hidden">0</span>
                     </button>
                     <div>
                         <p id="detailPrice" class="text-lg font-bold text-gray-900">가격</p>
@@ -150,7 +156,7 @@
     <!-- Firebase JS SDK (Module 버전 사용) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         // 사용자가 제공한 Firebase 설정
         const firebaseConfig = {
@@ -171,6 +177,34 @@
         const itemsCol = collection(db, "items");
 
         let itemsData = [];
+        let currentOpenItemId = null; // 현재 열려있는 상세 페이지의 아이템 ID
+        let uploadedImageBase64 = null; // 업로드된 이미지의 Base64 데이터
+
+        // 이미지 파일 선택 시 미리보기 및 Base64 변환
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const cameraIcon = document.getElementById('cameraIcon');
+
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                // 용량 제한 (예: 2MB) Firestore 단일 문서 크기 제한(1MB) 고려하여 약간 작게 설정
+                if (file.size > 800 * 1024) { 
+                    alert("이미지 용량이 너무 큽니다. 800KB 이하의 이미지를 선택해주세요.");
+                    imageInput.value = "";
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    uploadedImageBase64 = event.target.result;
+                    imagePreview.src = uploadedImageBase64;
+                    imagePreview.classList.remove('hidden');
+                    cameraIcon.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
         // DOM 요소 연결
         const itemListEl = document.getElementById('itemList');
@@ -245,6 +279,8 @@
             const item = itemsData.find(i => i.id === itemId);
             if (!item) return;
 
+            currentOpenItemId = itemId; // 현재 열린 아이템 ID 저장
+
             detailTitle.textContent = item.title;
             detailPrice.textContent = item.price === 0 ? '나눔' : Number(item.price).toLocaleString() + '원';
             detailDesc.textContent = item.desc;
@@ -255,6 +291,32 @@
                 detailImageContainer.innerHTML = `<img src="${item.imgUrl}" class="w-full h-full object-cover">`;
             } else {
                 detailImageContainer.innerHTML = `<span class="text-gray-400 material-symbols-outlined text-6xl">image</span>`;
+            }
+
+            // 좋아요 버튼 UI 초기화
+            const likeBtn = document.getElementById('likeBtn');
+            const likeCountEl = document.getElementById('likeCount');
+            
+            // 로컬 스토리지에서 내가 이 글을 좋아요 했는지 확인
+            const likedItems = JSON.parse(localStorage.getItem('likedItems') || '[]');
+            const isLiked = likedItems.includes(itemId);
+
+            if (isLiked) {
+                likeBtn.classList.remove('text-gray-400');
+                likeBtn.classList.add('text-red-500');
+                likeBtn.querySelector('span').classList.add('font-solid'); // 아이콘 꽉 차게 변경하는 CSS 클래스라고 가정 (Material Symbols에선 font-variation으로 해야함)
+                likeBtn.querySelector('span').style.fontVariationSettings = "'FILL' 1";
+            } else {
+                likeBtn.classList.remove('text-red-500');
+                likeBtn.classList.add('text-gray-400');
+                likeBtn.querySelector('span').style.fontVariationSettings = "'FILL' 0";
+            }
+
+            if (item.likes > 0) {
+                likeCountEl.textContent = item.likes;
+                likeCountEl.classList.remove('hidden');
+            } else {
+                likeCountEl.classList.add('hidden');
             }
 
             detailPage.classList.remove('hidden');
@@ -268,6 +330,63 @@
             setTimeout(() => {
                 detailPage.classList.add('hidden');
             }, 300);
+        });
+
+        // 좋아요 기능 로직
+        const likeBtn = document.getElementById('likeBtn');
+        likeBtn.addEventListener('click', async () => {
+            if (!currentOpenItemId) return;
+            
+            const item = itemsData.find(i => i.id === currentOpenItemId);
+            if (!item) return;
+
+            let likedItems = JSON.parse(localStorage.getItem('likedItems') || '[]');
+            const isLiked = likedItems.includes(currentOpenItemId);
+            
+            const itemRef = doc(db, "items", currentOpenItemId);
+            
+            // UI 즉시 업데이트 (Optimistic UI)
+            const likeCountEl = document.getElementById('likeCount');
+            
+            try {
+                if (isLiked) {
+                    // 좋아요 취소
+                    likedItems = likedItems.filter(id => id !== currentOpenItemId);
+                    localStorage.setItem('likedItems', JSON.stringify(likedItems));
+                    
+                    likeBtn.classList.remove('text-red-500');
+                    likeBtn.classList.add('text-gray-400');
+                    likeBtn.querySelector('span').style.fontVariationSettings = "'FILL' 0";
+                    
+                    const newLikes = Math.max(0, item.likes - 1);
+                    if (newLikes > 0) {
+                        likeCountEl.textContent = newLikes;
+                    } else {
+                        likeCountEl.classList.add('hidden');
+                    }
+                    
+                    await updateDoc(itemRef, { likes: newLikes });
+                    
+                } else {
+                    // 좋아요 추가
+                    likedItems.push(currentOpenItemId);
+                    localStorage.setItem('likedItems', JSON.stringify(likedItems));
+                    
+                    likeBtn.classList.remove('text-gray-400');
+                    likeBtn.classList.add('text-red-500');
+                    likeBtn.querySelector('span').style.fontVariationSettings = "'FILL' 1";
+                    
+                    const newLikes = item.likes + 1;
+                    likeCountEl.textContent = newLikes;
+                    likeCountEl.classList.remove('hidden');
+                    
+                    await updateDoc(itemRef, { likes: newLikes });
+                }
+            } catch (error) {
+                console.error("좋아요 업데이트 실패:", error);
+                alert("좋아요 처리에 실패했습니다.");
+                // 실제 서비스에서는 여기서 UI를 원래대로 되돌려야 함
+            }
         });
 
         fabBtn.addEventListener('click', () => {
@@ -310,7 +429,7 @@
                 price: Number(priceInput),
                 desc: descInput || "상세 설명이 없습니다.",
                 location: randomLocation,
-                imgUrl: null, 
+                imgUrl: uploadedImageBase64, 
                 likes: 0,
                 createdAt: serverTimestamp() // 서버 시간 기준으로 저장 및 정렬
             };
@@ -320,6 +439,11 @@
                 await addDoc(itemsCol, newItem);
                 closeModal();
                 document.getElementById('addItemForm').reset();
+                // 이미지 미리보기 초기화
+                imagePreview.src = "";
+                imagePreview.classList.add('hidden');
+                cameraIcon.classList.remove('hidden');
+                uploadedImageBase64 = null;
             } catch (error) {
                 console.error("데이터 추가 실패: ", error);
                 alert("등록에 실패했습니다. (데이터베이스 권한 설정을 확인하세요)");
