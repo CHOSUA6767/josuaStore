@@ -285,6 +285,13 @@
                 
                 article.onclick = () => openDetailPage(item.id);
                 
+                const commentCountNum = (item.comments || []).length;
+                const likesHtml = item.likes > 0 ? `<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">favorite</span> ${item.likes}</div>` : '';
+                const commentsHtml = commentCountNum > 0 ? `<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">chat_bubble</span> ${commentCountNum}</div>` : '';
+                
+                const statsHtml = (likesHtml || commentsHtml) ? 
+                    `<div class="flex items-center text-gray-400 gap-2 text-sm">${commentsHtml}${likesHtml}</div>` : '';
+
                 article.innerHTML = `
                     <div class="w-28 h-28 bg-gray-200 rounded-md flex-shrink-0 overflow-hidden relative flex items-center justify-center">
                         ${imageHtml}
@@ -294,7 +301,7 @@
                         <p class="text-sm text-gray-500 mt-1">${item.location} · 방금 전</p>
                         <div class="mt-2 flex justify-between items-end">
                             <p class="text-lg font-bold">${formattedPrice}</p>
-                            ${item.likes > 0 ? `<div class="flex items-center text-gray-400 gap-1 text-sm"><span class="material-symbols-outlined text-[16px]">favorite</span> ${item.likes}</div>` : ''}
+                            ${statsHtml}
                         </div>
                     </div>
                 `;
