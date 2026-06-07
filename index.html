@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중고 장터</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Mobile app like layout constraint for desktop */
+        body {
+            background-color: #f3f4f6; /* bg-gray-100 */
+        }
+        .app-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        /* Hide scrollbar for cleaner look */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+</head>
+<body class="text-gray-800 font-sans">
+
+    <div class="app-container flex flex-col h-screen">
+        
+        <!-- Header -->
+        <header class="sticky top-0 bg-white border-b border-gray-200 z-10 px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <h1 class="text-xl font-bold text-orange-500">우리동네 장터</h1>
+            </div>
+            <div class="flex items-center gap-4 text-gray-700">
+                <button class="hover:bg-gray-100 p-1 rounded-full transition"><span class="material-symbols-outlined">search</span></button>
+                <button class="hover:bg-gray-100 p-1 rounded-full transition"><span class="material-symbols-outlined">menu</span></button>
+            </div>
+        </header>
+
+        <!-- Main Content (Item List) -->
+        <main class="flex-1 overflow-y-auto pb-20">
+            <!-- Item 1 -->
+            <article class="flex px-4 py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition">
+                <div class="w-28 h-28 bg-gray-200 rounded-md flex-shrink-0 overflow-hidden relative">
+                    <!-- Placeholder image -->
+                    <img src="https://picsum.photos/seed/item1/200/200" alt="상품 이미지" class="w-full h-full object-cover">
+                </div>
+                <div class="ml-4 flex flex-col justify-center flex-1">
+                    <h2 class="text-lg font-medium text-gray-900 line-clamp-2">아이패드 프로 4세대 11인치 팝니다</h2>
+                    <p class="text-sm text-gray-500 mt-1">강남구 역삼동 · 2시간 전</p>
+                    <div class="mt-2 flex justify-between items-end">
+                        <p class="text-lg font-bold">650,000원</p>
+                        <div class="flex items-center text-gray-400 gap-1 text-sm">
+                            <span class="material-symbols-outlined text-[16px]">favorite</span> 12
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Item 2 -->
+            <article class="flex px-4 py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition">
+                <div class="w-28 h-28 bg-gray-200 rounded-md flex-shrink-0 overflow-hidden relative">
+                    <img src="https://picsum.photos/seed/item2/200/200" alt="상품 이미지" class="w-full h-full object-cover">
+                </div>
+                <div class="ml-4 flex flex-col justify-center flex-1">
+                    <h2 class="text-lg font-medium text-gray-900 line-clamp-2">캠핑 의자 2개 세트 (상태 A급)</h2>
+                    <p class="text-sm text-gray-500 mt-1">서초구 방배동 · 5시간 전</p>
+                    <div class="mt-2 flex justify-between items-end">
+                        <p class="text-lg font-bold">30,000원</p>
+                        <div class="flex items-center text-gray-400 gap-1 text-sm">
+                            <span class="material-symbols-outlined text-[16px]">favorite</span> 3
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Item 3 -->
+            <article class="flex px-4 py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition">
+                <div class="w-28 h-28 bg-gray-200 rounded-md flex-shrink-0 overflow-hidden relative">
+                    <img src="https://picsum.photos/seed/item3/200/200" alt="상품 이미지" class="w-full h-full object-cover">
+                </div>
+                <div class="ml-4 flex flex-col justify-center flex-1">
+                    <h2 class="text-lg font-medium text-gray-900 line-clamp-2">스투키 화분 인테리어용</h2>
+                    <p class="text-sm text-gray-500 mt-1">송파구 잠실동 · 1일 전</p>
+                    <div class="mt-2 flex justify-between items-end">
+                        <p class="text-lg font-bold">15,000원</p>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Item 4 -->
+            <article class="flex px-4 py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition">
+                <div class="w-28 h-28 bg-gray-200 rounded-md flex-shrink-0 overflow-hidden relative">
+                    <img src="https://picsum.photos/seed/item4/200/200" alt="상품 이미지" class="w-full h-full object-cover">
+                </div>
+                <div class="ml-4 flex flex-col justify-center flex-1">
+                    <h2 class="text-lg font-medium text-gray-900 line-clamp-2">나이키 운동화 265mm 한 번 신음</h2>
+                    <p class="text-sm text-gray-500 mt-1">강동구 천호동 · 2일 전</p>
+                    <div class="mt-2 flex justify-between items-end">
+                        <p class="text-lg font-bold">45,000원</p>
+                        <div class="flex items-center text-gray-400 gap-1 text-sm">
+                            <span class="material-symbols-outlined text-[16px]">favorite</span> 5
+                        </div>
+                    </div>
+                </div>
+            </article>
+            
+             <!-- Item 5 -->
+             <article class="flex px-4 py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition">
+                <div class="w-28 h-28 bg-gray-200 rounded-md flex-shrink-0 overflow-hidden relative flex items-center justify-center">
+                    <span class="text-gray-400 material-symbols-outlined text-4xl">image</span>
+                </div>
+                <div class="ml-4 flex flex-col justify-center flex-1">
+                    <h2 class="text-lg font-medium text-gray-900 line-clamp-2">원목 책상 무료나눔 합니다. 직접 가져가셔야 해요.</h2>
+                    <p class="text-sm text-gray-500 mt-1">동작구 사당동 · 3일 전</p>
+                    <div class="mt-2 flex justify-between items-end">
+                        <p class="text-lg font-bold">나눔</p>
+                    </div>
+                </div>
+            </article>
+
+        </main>
+
+        <!-- Floating Action Button (FAB) -->
+        <button id="fabBtn" class="absolute bottom-6 right-6 bg-orange-500 text-white p-4 rounded-full shadow-lg hover:bg-orange-600 transition flex items-center justify-center z-20">
+            <span class="material-symbols-outlined">add</span>
+        </button>
+
+        <!-- Add Item Modal -->
+        <div id="addModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div class="bg-white w-full max-w-md mx-4 rounded-xl shadow-2xl flex flex-col max-h-[90vh]">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-lg font-bold">내 물건 팔기</h3>
+                    <button id="closeModalBtn" class="text-gray-500 hover:text-gray-800">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="p-6 overflow-y-auto flex-1">
+                    <form id="addItemForm" class="flex flex-col gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">상품 이미지</label>
+                            <div class="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400 cursor-pointer hover:bg-gray-50">
+                                <span class="material-symbols-outlined">add_a_photo</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">제목</label>
+                            <input type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500" placeholder="상품 제목을 입력하세요">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">가격 (원)</label>
+                            <input type="number" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500" placeholder="가격을 입력하세요">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">자세한 설명</label>
+                            <textarea rows="4" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 resize-none" placeholder="상품에 대한 자세한 설명을 적어주세요"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="px-6 py-4 border-t border-gray-200 flex justify-end">
+                    <button id="submitBtn" class="bg-orange-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-600 transition w-full">작성 완료</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Modal Logic
+        const fabBtn = document.getElementById('fabBtn');
+        const addModal = document.getElementById('addModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Open Modal
+        fabBtn.addEventListener('click', () => {
+            addModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        });
+
+        // Close Modal
+        const closeModal = () => {
+            addModal.classList.add('hidden');
+            document.body.style.overflow = '';
+        };
+
+        closeModalBtn.addEventListener('click', closeModal);
+
+        // Close when clicking outside the modal content
+        addModal.addEventListener('click', (e) => {
+            if (e.target === addModal) {
+                closeModal();
+            }
+        });
+
+        // Submit action (placeholder)
+        submitBtn.addEventListener('click', () => {
+            alert('상품이 등록되었습니다! (현재는 UI 테스트용입니다)');
+            closeModal();
+            document.getElementById('addItemForm').reset();
+        });
+    </script>
+</body>
+</html>
