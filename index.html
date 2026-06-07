@@ -133,6 +133,18 @@
                     <p class="text-sm text-gray-500 mt-1 mb-6" id="detailTime">시간</p>
                     <p id="detailDesc" class="text-gray-800 whitespace-pre-wrap leading-relaxed text-[15px]">상품 설명</p>
                 </div>
+                
+                <!-- Comments Section -->
+                <div class="p-4 border-t border-gray-100 bg-gray-50 min-h-[200px]">
+                    <h3 class="font-bold text-gray-900 mb-4">댓글 <span id="commentCount" class="text-[#0f766e]">0</span></h3>
+                    <div id="commentList" class="flex flex-col gap-3 mb-4">
+                        <!-- Comments will be rendered here -->
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="commentInput" class="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:border-[#0f766e] text-sm" placeholder="댓글을 남겨보세요...">
+                        <button id="commentSubmitBtn" class="bg-[#0f766e] text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-[#115e59] transition flex-shrink-0">등록</button>
+                    </div>
+                </div>
             </div>
             
             <!-- Detail Bottom Bar -->
@@ -156,7 +168,7 @@
     <!-- Firebase JS SDK (Module 버전 사용) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
         // 사용자가 제공한 Firebase 설정
@@ -181,6 +193,12 @@
         let itemsData = [];
         let currentOpenItemId = null; // 현재 열려있는 상세 페이지의 아이템 ID
         let uploadedImageFile = null; // 업로드할 실제 파일 객체
+
+        // 댓글 DOM 요소
+        const commentList = document.getElementById('commentList');
+        const commentInput = document.getElementById('commentInput');
+        const commentSubmitBtn = document.getElementById('commentSubmitBtn');
+        const commentCount = document.getElementById('commentCount');
 
         // 이미지 파일 선택 시 미리보기 처리
         const imageInput = document.getElementById('imageInput');
@@ -228,6 +246,12 @@
                 itemsData.push({ id: doc.id, ...doc.data() });
             });
             renderItems();
+            
+            // 상세 페이지가 열려있을 때 실시간 댓글 업데이트
+            if (currentOpenItemId && !detailPage.classList.contains('hidden')) {
+                const currentItem = itemsData.find(i => i.id === currentOpenItemId);
+                if (currentItem) renderComments(currentItem);
+            }
         }, (error) => {
             console.error("데이터 불러오기 실패:", error);
             alert("게시물을 불러오지 못했습니다. 파이어베이스 규칙(Rules) 설정이 안 되어 있을 확률이 높습니다!");
@@ -268,6 +292,35 @@
                     </div>
                 `;
                 itemListEl.appendChild(article);
+            });
+        }
+
+        // 댓글 렌더링 함수
+        function renderComments(item) {
+            commentList.innerHTML = '';
+            const comments = item.comments || [];
+            commentCount.textContent = comments.length;
+            
+            if (comments.length === 0) {
+                commentList.innerHTML = '<p class="text-sm text-gray-400 text-center py-4">아직 댓글이 없습니다. 첫 댓글을 남겨보세요!</p>';
+                return;
+            }
+
+            comments.forEach(c => {
+                const div = document.createElement('div');
+                div.className = 'bg-white p-3 rounded-lg shadow-sm border border-gray-100';
+                const timeString = c.createdAt ? new Date(c.createdAt).toLocaleString() : '방금 전';
+                div.innerHTML = `
+                    <div class="flex items-center gap-2 mb-1">
+                        <div class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
+                            <span class="material-symbols-outlined text-sm text-gray-500">face</span>
+                        </div>
+                        <span class="font-bold text-xs text-gray-700">${c.author}</span>
+                        <span class="text-[10px] text-gray-400 ml-auto">${timeString}</span>
+                    </div>
+                    <p class="text-sm text-gray-800 pl-8 break-words">${c.text}</p>
+                `;
+                commentList.appendChild(div);
             });
         }
 
@@ -315,6 +368,8 @@
             } else {
                 likeCountEl.classList.add('hidden');
             }
+
+            renderComments(item);
 
             detailPage.classList.remove('hidden');
             setTimeout(() => {
@@ -386,6 +441,33 @@
             }
         });
 
+        // 댓글 등록 로직
+        commentSubmitBtn.addEventListener('click', async () => {
+            const text = commentInput.value.trim();
+            if (!text || !currentOpenItemId) return;
+
+            commentSubmitBtn.disabled = true;
+            
+            const newComment = {
+                text: text,
+                author: "동네주민",
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                const itemRef = doc(db, "items", currentOpenItemId);
+                await updateDoc(itemRef, {
+                    comments: arrayUnion(newComment)
+                });
+                commentInput.value = '';
+            } catch (error) {
+                console.error("댓글 작성 실패:", error);
+                alert("댓글 등록에 실패했습니다.");
+            } finally {
+                commentSubmitBtn.disabled = false;
+            }
+        });
+
         fabBtn.addEventListener('click', () => {
             const password = prompt('관리자 비밀번호를 입력해주세요:');
             if (password === 'josua123') {
@@ -443,6 +525,7 @@
                     location: randomLocation,
                     imgUrl: finalImgUrl, 
                     likes: 0,
+                    comments: [],
                     createdAt: serverTimestamp() // 서버 시간 기준으로 저장 및 정렬
                 };
 
