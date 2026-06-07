@@ -39,7 +39,7 @@
         <!-- Header -->
         <header class="sticky top-0 bg-white border-b border-gray-200 z-10 px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <h1 class="text-xl font-bold text-green-500">우리동네 장터</h1>
+                <h1 class="text-xl font-bold text-[#83f5cb]">우리동네 장터</h1>
             </div>
             <div class="flex items-center gap-4 text-gray-700">
                 <button class="hover:bg-gray-100 p-1 rounded-full transition"><span class="material-symbols-outlined">search</span></button>
@@ -53,7 +53,7 @@
         </main>
 
         <!-- Floating Action Button (FAB) -->
-        <button id="fabBtn" class="absolute bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition flex items-center justify-center z-20">
+        <button id="fabBtn" class="absolute bottom-6 right-6 bg-[#83f5cb] text-white p-4 rounded-full shadow-lg hover:bg-[#6bd6ad] transition flex items-center justify-center z-20">
             <span class="material-symbols-outlined">add</span>
         </button>
 
@@ -76,20 +76,20 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">제목</label>
-                            <input type="text" id="itemTitle" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500" placeholder="상품 제목을 입력하세요">
+                            <input type="text" id="itemTitle" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#83f5cb] focus:ring-1 focus:ring-[#83f5cb]" placeholder="상품 제목을 입력하세요">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">가격 (원)</label>
-                            <input type="number" id="itemPrice" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500" placeholder="가격을 입력하세요">
+                            <input type="number" id="itemPrice" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#83f5cb] focus:ring-1 focus:ring-[#83f5cb]" placeholder="가격을 입력하세요">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">자세한 설명</label>
-                            <textarea id="itemDesc" rows="4" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 resize-none" placeholder="상품에 대한 자세한 설명을 적어주세요"></textarea>
+                            <textarea id="itemDesc" rows="4" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#83f5cb] focus:ring-1 focus:ring-[#83f5cb] resize-none" placeholder="상품에 대한 자세한 설명을 적어주세요"></textarea>
                         </div>
                     </form>
                 </div>
                 <div class="px-6 py-4 border-t border-gray-200 flex justify-end">
-                    <button id="submitBtn" class="bg-green-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-600 transition w-full">작성 완료</button>
+                    <button id="submitBtn" class="bg-[#83f5cb] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#6bd6ad] transition w-full">작성 완료</button>
                 </div>
             </div>
         </div>
@@ -114,9 +114,9 @@
                         <p class="text-xs text-gray-500" id="detailLocation">위치 정보</p>
                     </div>
                     <div class="text-right">
-                        <p class="text-sm font-bold text-green-500">75 bpm</p>
+                        <p class="text-sm font-bold text-[#83f5cb]">75 bpm</p>
                         <div class="w-12 h-1 bg-gray-200 rounded-full mt-1">
-                            <div class="w-1/2 h-full bg-green-500 rounded-full"></div>
+                            <div class="w-1/2 h-full bg-[#83f5cb] rounded-full"></div>
                         </div>
                     </div>
                 </div>
@@ -135,10 +135,10 @@
                     </button>
                     <div>
                         <p id="detailPrice" class="text-lg font-bold text-gray-900">가격</p>
-                        <p class="text-xs text-green-500 font-bold">가격 제안 불가</p>
+                        <p class="text-xs text-[#83f5cb] font-bold">가격 제안 불가</p>
                     </div>
                 </div>
-                <button class="bg-green-500 text-white px-5 py-2 rounded-md font-bold hover:bg-green-600 transition">채팅하기</button>
+                <button class="bg-[#83f5cb] text-white px-5 py-2 rounded-md font-bold hover:bg-[#6bd6ad] transition">채팅하기</button>
             </div>
         </div>
 
@@ -208,11 +208,14 @@
         const detailLocation = document.getElementById('detailLocation');
         const detailTime = document.getElementById('detailTime');
 
-        // 3. 상품 목록 화면에 그리기
+        // 3. 상품 목록 화면에 그리기 (최신순)
         function renderItems() {
             itemListEl.innerHTML = ''; // 기존 목록 비우기
             
-            itemsData.forEach(item => {
+            // ID(작성 시간) 기준으로 내림차순 정렬하여 최신 글이 위로 오게 함
+            const sortedItems = [...itemsData].sort((a, b) => b.id - a.id);
+            
+            sortedItems.forEach(item => {
                 const formattedPrice = item.price === 0 ? '나눔' : Number(item.price).toLocaleString() + '원';
                 const imageHtml = item.imgUrl 
                     ? `<img src="${item.imgUrl}" alt="상품" class="w-full h-full object-cover">`
@@ -302,7 +305,7 @@
             }
 
             const newItem = {
-                id: Date.now(), // 고유 ID 생성
+                id: Date.now(), // 고유 ID 생성 (시간 기반이므로 정렬에 사용 가능)
                 title: titleInput,
                 price: Number(priceInput),
                 desc: descInput || "상세 설명이 없습니다.",
@@ -312,8 +315,8 @@
                 likes: 0
             };
 
-            // 데이터를 배열 맨 앞에 추가하고, LocalStorage에 저장 후 리렌더링
-            itemsData.unshift(newItem);
+            // 데이터를 배열에 추가하고, LocalStorage에 저장 후 리렌더링
+            itemsData.push(newItem); // renderItems에서 정렬하므로 push 사용 가능
             saveItems(itemsData);
             renderItems();
 
