@@ -197,6 +197,10 @@
                 itemsData.push({ id: doc.id, ...doc.data() });
             });
             renderItems();
+        }, (error) => {
+            console.error("데이터 불러오기 실패:", error);
+            alert("게시물을 불러오지 못했습니다. 파이어베이스 규칙(Rules) 설정이 안 되어 있을 확률이 높습니다!");
+            itemListEl.innerHTML = '<div class="flex justify-center items-center h-full"><p class="text-red-500">데이터베이스 접근 권한이 없습니다.</p></div>';
         });
 
         // 상품 목록 화면에 그리기
